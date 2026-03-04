@@ -86,7 +86,7 @@ def main():
                 square_grid[i][j] = values[j]
 
         ans = hopscotch(0,0,n,k)
-        print(ans)
+        print(f'{ans}\n')
         memoria.clear()
 
         for i in range(n):
