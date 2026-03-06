@@ -3,33 +3,32 @@
 #Fecha: 01/03/2026
 
 from sys import stdin
+INF = float('inf')
 
-memorizacion = {}
+def giant_tabulacion(n,k):
+    tab = [[0 for _ in range(n + 1)] for _ in range(n + 1) ]
+    r = 1
+    while r < (n + 1):
+        l = r - 1
+        while l > 0:
+            i = l
+            histo = INF
+            while i < r:
+                peso = tab[l][i - 1]
+                peso += tab[i + 1][r]
+                peso += ((r - l) + 1) * ((i) + k)
+                histo = min(peso,histo)
 
-def giant(left,right,k):
-    if left == right or left > right:
-        ans = 0
+                i += 1
 
-    elif (left,right) in memorizacion:
-        ans = memorizacion[left,right]
 
-    else:
-        ans = float('inf')
-        
-        for i in range(left,right + 1):
+            tab[l][r] = histo
+            l -= 1
+        r += 1
+    return tab[1][n] 
 
-            #es sour
-            costo = giant(left, i - 1,k)
-            #es bitter
-            costo += giant(i + 1,right,k)
-            #costo de elegir esa manzana
-            costo += ((right - left) + 1)*(i + k)
 
-            ans = min(ans,costo)
 
-        memorizacion[left,right] = ans
-
-    return ans
 
 
 def main():
@@ -38,10 +37,7 @@ def main():
     for i in range(cases):
 
         n, k = map(int,stdin.readline().split())
-
-        ans = giant(1,n,k)
-
-        print(f'Cases {i + 1}: {ans}')
-
+        ans = giant_tabulacion(n,k)
+        print(f'Case {i + 1}: {ans}')
 
 main()

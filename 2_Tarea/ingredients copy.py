@@ -3,8 +3,10 @@
 #Fecha: 02/03/2026
 
 from sys import stdin
+import sys
 from collections import deque
-
+# 2. Incrementar el límite (por ejemplo, a 2000)
+sys.setrecursionlimit(1000000)
 pizzas = {}
 llaves = {}
 fuentes = []
@@ -56,48 +58,70 @@ def calc_mincost(topito):
     return val
 
 def max_benf(n,capacidad,val):
-    #hp = prestigio historico
-    hp = 0
-    #hc = costo historico
-    hc = 0
+    ans = [0,0]
 
     if (n,capacidad) in memoria:
-        #caso dp
-        hp,hc = memoria[(n,capacidad)]
+        ans = memoria[(n,capacidad)]
 
     elif n == len(val):
-        #caso base
-        hp = 0
-        hc = 0
+        ans[0] = 0 #costo
+        ans[1] = 0 #prestigio
 
     else:
-        #p1, c1 es si se escoge la pizza actual cuanto prestigio y costo me toca
-        p1 = 0
-        c1 = 0
+        elegir = []
         if capacidad - val[n][0] >= 0:
-            p1, c1 = max_benf(n + 1,capacidad - val[n][0],val)
-            p1 += val[n][1]
-            c1 += val[n][0]
-        #p2, c2 es si no escogo esa pizza no pierdo el espacio del presupuesto pero tampoco gano el beneficio
-        p2,c2 = max_benf(n + 1, capacidad,val)
+            elegir = max_benf(n + 1,capacidad - val[n][0],val)
+            elegir[0] += val[n][0]
+            elegir[1] += val[n][1]
+
+        no_elegir = max_benf(n + 1, capacidad,val)
         
-        #eligo la de mayor prestigio
-        if p1 != 0:
-            if p1 > p2:
-                hp = p1
-                hc = c1
-                
+
+        if elegir != []:
+            if elegir[1] > no_elegir[1]:
+                ans = elegir
+
+            elif elegir[1] == no_elegir[1]:
+                costo_min = min(elegir[0],no_elegir[0])
+                ans = [costo_min,elegir[1]]
             else:
-                hp = p2
-                hc = c2
+                ans = no_elegir
         
         else:
-            hp = p2
-            hc = c2
+            ans = no_elegir
         
-        memoria[(n,capacidad)] = (hp,hc)
+        memoria[(n,capacidad)] = ans
 
-    return (hp,hc)
+    return ans
+"""
+
+def max_benf(n,capacidad,val,costo):
+    ans = 0
+
+
+    if n < len(val) and capacidad > 0:
+
+        elegir = 0
+        if capacidad - val[n][0] >= 0:
+            elegir = max_benf(n + 1,capacidad - val[n][0],val,costo) + val[n][1]
+
+
+        no_elegir = max_benf(n + 1, capacidad,val,costo)
+       #print(val[n][0],val[n][1])
+        print(elegir,no_elegir)
+        if elegir != 0:
+            if elegir > no_elegir:
+                ans = elegir
+            else:
+                ans = no_elegir
+        
+        else:
+            ans = no_elegir
+
+ 
+
+    return ans
+"""
 
 def main():
     line = stdin.readline()
@@ -136,11 +160,11 @@ def main():
         val = calc_mincost(topito)
         
 
-        p,c = max_benf(0,costo,val)
+        ans = max_benf(0,costo,val)
 
-        #print(f"{ans}\n")
-        print(p)
-        print(c)
+        #print(ans)
+        print(ans[1])
+        print(ans[0])
         pizzas.clear()
         llaves.clear()
         topito.clear()

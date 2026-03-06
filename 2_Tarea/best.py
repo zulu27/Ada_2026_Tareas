@@ -11,10 +11,20 @@ def best(n,c):
     if n == len(stocks):
         ans = 0
     
+    elif c == 0:
+        ans = 0
+    
     elif (n,c) in memoria:
         ans = memoria[(n,c)]
-    else:
-        elegir = best(n+1,c - stocks[n]) + stocks[n]
+    
+
+    elif c > 0:
+        if c > 0:
+            elegir = best(n+1,c - stocks[n]) + stocks[n]
+
+        else:
+            elegir = float('inf')
+
         no_elegir = best(n+1,c)
 
         if c - elegir <= 0 and c - no_elegir <= 0:
@@ -30,6 +40,9 @@ def best(n,c):
             ans = no_elegir
         
         memoria[(n,c)] = ans
+    
+    else:
+        ans = 0
 
     return ans
 

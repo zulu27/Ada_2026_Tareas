@@ -48,7 +48,7 @@ def right(p,q,n,k):
     aux = 0
 
     for i in range(k):
-        if ( q + (i + 1)) <= n and square_grid[p][q] < square_grid[p][q + (i + 1)]:
+        if ( q + (i + 1)) < n and square_grid[p][q] < square_grid[p][q + (i + 1)]:
             aux = hopscotch(p, q + (i + 1), n, k)
             if aux > ans:
                 ans = aux
@@ -76,7 +76,7 @@ def hopscotch(p,q,n,k):
 def main():
     cases = int(stdin.readline())
 
-    for _ in range(cases):
+    for a in range(cases):
         stdin.readline()
         n , k = map(int,stdin.readline().split())
 
@@ -86,7 +86,13 @@ def main():
                 square_grid[i][j] = values[j]
 
         ans = hopscotch(0,0,n,k)
-        print(f'{ans}\n')
+        
+        if a != (cases - 1):
+            print(f'{ans}\n')
+
+        else:
+            print(f'{ans}')
+
         memoria.clear()
 
         for i in range(n):
