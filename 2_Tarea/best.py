@@ -6,55 +6,62 @@ from sys import stdin
 
 stocks =  []
 memoria = {}
+INF = float('inf')
 
 def best(n,c):
-    if n == len(stocks):
+    key = (n,c)
+
+    ans = INF
+
+    if key in memoria:
+        ans = memoria[key]
+
+    elif c <= 0:
         ans = 0
-    
-    elif c == 0:
-        ans = 0
-    
-    elif (n,c) in memoria:
-        ans = memoria[(n,c)]
-    
 
-    elif c > 0:
-        if c > 0:
-            elegir = best(n+1,c - stocks[n]) + stocks[n]
-
-        else:
-            elegir = float('inf')
-
-        no_elegir = best(n+1,c)
-
-        if c - elegir <= 0 and c - no_elegir <= 0:
-            ans = min(elegir,no_elegir)
-        
-        elif c - elegir > 0 and c - no_elegir > 0:
-            ans = max(elegir,no_elegir)
-        
-        elif c - elegir <= 0: 
-            ans = elegir
-        
-        else:
-            ans = no_elegir
-        
-        memoria[(n,c)] = ans
+    elif n == len(stocks):
+        ans = INF
     
     else:
-        ans = 0
+        elegir = best(n+1,c - stocks[n]) + stocks[n]
+        no_elegir = best(n+1,c)
+        if elegir != INF and no_elegir != INF:
+
+            if elegir >= c and no_elegir >= c:
+                ans = min(elegir,no_elegir)
+
+            elif elegir >= c:
+                ans = elegir
+
+            elif no_elegir >= c:
+                ans = no_elegir
+
+            else:
+                ans = max(no_elegir,elegir)
+
+        elif elegir != INF:
+            ans = elegir
+        
+        elif no_elegir != INF:
+            ans = no_elegir
+
+        else:
+            ans = INF
+
+    memoria[key] = ans
 
     return ans
+
 
 def main():
 
     cases, holder = map(int,stdin.readline().split())
-
+    j = 1
     while cases != 0 and holder != 0:
         holder -= 1
         
         for i in range(cases):
-            porcentaje = float(stdin.readline())
+            porcentaje = round(float(stdin.readline()) * 100)
 
 
             if i == holder:
@@ -63,13 +70,17 @@ def main():
             else:
                 stocks.append(porcentaje)
 
-        ans = best(0,50 - porcentage_holder) + porcentage_holder
-
+        ans = best(0,5001 - porcentage_holder) + porcentage_holder
         ans = (porcentage_holder*100)/ans
 
-        print(f'{round(ans,2):.2f}')
-        stocks.clear()
+
+        print(f'{ans:.2f}')
+
+        
         memoria.clear()
         cases, holder = map(int,stdin.readline().split())
+
+        stocks.clear()
+        j += 1
 
 main()
