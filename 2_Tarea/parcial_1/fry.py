@@ -32,9 +32,6 @@ def fry(n,c):
 
     return ans
 
-
-
-
 def main():
     n = int(stdin.readline())
 
