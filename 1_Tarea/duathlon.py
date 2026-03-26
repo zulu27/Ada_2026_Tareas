@@ -55,11 +55,13 @@ def main():
             t = int(line)
             n = int(stdin.readline())
             for _ in range(n):
-                (r, c) = map(float, stdin.readline().split())
-
+                (r, c) = (map(float, stdin.readline().split()))
+                r = int(r*100)
+                c = int(c*100)
                 participantes.append([r, c])
 
             r = duathlon(t)
+            r = r/100
             k = t - r
 
             tmp = tiempo(r, t)
