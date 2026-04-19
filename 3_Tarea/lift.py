@@ -26,29 +26,34 @@ class Estados:
 
 
     def __lt__(self, other):
-        return self.costo < other.costo
+        return self.costo <= other.costo
 
-def dijkstra(k,demora,ascensor,max_ascensores,piso):
+
+
+def dijkstra(k,demora,ascensor,max_ascensores,piso,min_ascensores):
     queue = []
     procesados = {}
     llegue = False
+    ans = INF
     for asc in piso[0]:
         dem = demora[asc]*max_ascensores[asc]
         heappush(queue,Estados(0,asc,dem))
 
     while len(queue) != 0 and not llegue :
         act = heappop(queue)
-        ans = INF
+        
+        
         if act.getPiso() == k:
             llegue = True
             ans = act.getCosto()
         #si ya procesamos ignoramos
         elif (act.getPiso(),act.getAscensor()) not in procesados:
+            procesados[(act.getPiso(),act.getAscensor())] = act.getCosto()
             for asc in piso[act.getPiso()]:
                 
                 if asc != act.getAscensor():
-                    mas_l = max(abs(max_ascensores[asc] - act.getPiso()), act.getPiso()) * demora[asc]
-                    Estado_nuevo = Estados(act.getPiso(),asc,act.getCosto()+5 + mas_l)
+                    mas_l = max((max_ascensores[asc] - act.getPiso())*demora[asc], (act.getPiso()- min_ascensores[asc] )* demora[asc])
+                    Estado_nuevo = Estados(act.getPiso(),asc,act.getCosto()+ 5 + mas_l)
                     heappush(queue,Estado_nuevo)
 
             for parada in ascensor[act.getAscensor()]:
@@ -56,8 +61,7 @@ def dijkstra(k,demora,ascensor,max_ascensores,piso):
                     mas_l = abs(act.getPiso() - parada)*demora[act.getAscensor()]
                     Estado_nuevo = Estados(parada,act.getAscensor(),act.getCosto() + mas_l)
                     heappush(queue,Estado_nuevo)
-
-        procesados[(act.getPiso(),act.getAscensor())] = act.getCosto()
+        
 
     return ans
 
@@ -68,6 +72,7 @@ def main():
         demora = []
         ascensor = [] #todas las paradas de un ascensor 
         max_ascensores = [] #el piso más alto al que llega un ascensor
+        min_ascensores = [] #el piso más bajo al que llega un ascensor
         piso = {} #que ascensores paran en un piso
         
 
@@ -79,6 +84,7 @@ def main():
             paradas = list(map(int, stdin.readline().split()))
             ascensor.append(paradas)
             max_ascensores.append(paradas[-1])
+            min_ascensores.append(paradas[0])
             for j in paradas:
                 if j not in piso:
                     piso[j] = []
@@ -91,22 +97,25 @@ def main():
         if dest == 0:
             print(0)
 
+        elif 0 not in piso or len(piso[0]) == 0:
+            print("IMPOSSIBLE")
+
         elif dest in piso:
-            ans = dijkstra(dest,demora,ascensor,max_ascensores,piso)
+            ans = dijkstra(dest,demora,ascensor,max_ascensores,piso,min_ascensores)
             if ans != INF:
                 print(ans)
             else:
-                print("IMPOSIBLE")    
+                print("IMPOSSIBLE")    
 
         else:
-            print("IMPOSIBLE")
+            print("IMPOSSIBLE")
 
         line = stdin.readline()
 
-        demora.clear()
-        ascensor.clear()
-        max_ascensores.clear()
-        piso.clear()
+        #demora.clear()
+        #ascensor.clear()
+        #max_ascensores.clear()
+        #piso.clear()
 
 
 main()
