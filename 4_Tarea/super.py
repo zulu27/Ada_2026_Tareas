@@ -7,26 +7,35 @@ Codigo: 8989815
 from sys import stdin
 num = [0,1,2,3,4,5,6,7,8,9]
 ans = -1
+flag = False
 
 def super(m,i,sol):
     global ans
-    
-    if ans == 1020005460:
-        print("Lo ecnontre")
+    global flag
+
     if i > m:
-        if ans == -1 or ans > sol:
-            ans = int(sol)
+        flag = True
+        ans = int(sol)
 
     else:
-
+        
         sol= 10*sol
+        j = 0
+        while j < len(num) and not flag:
+            numero = num[j]
+            sol += numero
+            if sol % i == 0:
+                super(m,i+1,sol)
+            sol-= numero
+            j += 1
+        """
         for numero in num:
             sol += numero
             if sol % i == 0:
                 
                 super(m,i+1,sol)
             sol-= numero
-                
+        """        
         sol = sol//10
 
 
@@ -40,7 +49,7 @@ def main():
         count = 10**(n-1)
         maximo = 10**n
 
-
+        
         while count < maximo:
 
             if count % n == 0:
@@ -51,7 +60,7 @@ def main():
         print(ans)
         
         ans = -1
-
+        flag = False
 
     return 0
 

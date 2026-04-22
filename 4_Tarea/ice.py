@@ -13,53 +13,44 @@ parejas_clave = {}
 
 ans = 0
 
-def ice(vis,x,y,check,t,puntos_clave):
-    global ans
-    pareja = parejas_clave[check]
-    #print(vis)
-    if vis == t and x == 0 and y == 1 and check == 3:
-        print("hola")
+def ice(x,y,vis,mom_c):
+    if x == 0 and y == 1:
         ans += 1
     
-    elif check < 3:
-        clave_x = puntos_clave[pareja[0]]
-        clave_y = puntos_clave[pareja[1]]
+    else:
 
-        if checks[check] == vis and x == clave_x and y == clave_y:
-            lago[x][y] = True
-            for nx,ny in movimientos:
-                i = x + nx
-                j = y + ny
-                if i >= 0 and i < len(lago) and j >= 0 and j < len(lago[i]) and lago[i][j] == False:
-                    ice(vis + 1,i,j,check + 1,t,puntos_clave)
-            lago[x][y] = False
-
-        elif checks[check] > vis and (x,y) != (clave_x,clave_y):
+        
             
-            lago[x][y] = True
-            for nx,ny in movimientos:
-                i = x + nx
-                j = y + ny
-                if i >= 0 and i < len(lago) and j >= 0 and j < len(lago[i]) and lago[i][j] == False:
-                    ice(vis + 1,i,j,check,t,puntos_clave)
-            lago[x][y] = False
+        for i,j in movimientos:
+            n_x = i + x
+            n_y = j + y
+            if n_x >= 0 and n_x < len(lago) and n_y >= 0 and n_y < len(lago[n_x]) and lago[n_x][n_y] == False:
+                if mom_c < len(checks) and vis == checks[mom_c] and (x,y) == puntos_clave[mom_c]:
+                    lago[n_x][n_y] = True
+                    ice(x,y,vis+1,mom_c + 1)
+                    lago[n_x][n_y] = False
+
+                elif vis < checks[mom_c] and (x,y) not in 
+                    
+         
 
 def main():
     n,m = map(int,stdin.readline().split())
     i = 1
-    parejas_clave[0] = (0,1)
-    parejas_clave[1] = (2,3)
-    parejas_clave[2] = (4,5)
-    
  
     while n != 0 and m != 0:
+
         for i in range(n):
             lago.append([])
             for _ in range(m):
                 lago[i].append(False)
 
-        puntos_clave = list(map(int,stdin.readline().split()))
-
+        puntos = list(map(int,stdin.readline().split()))
+        puntos_clave.append((puntos[0],puntos[1]))
+        puntos_clave.append((puntos[2],puntos[3]))
+        puntos_clave.append((puntos[4],puntos[5]))
+        
+        
         t = n*m
         checks.append(t//4)
         checks.append(t//2)
@@ -68,7 +59,7 @@ def main():
         #print(checks)
         
         lago[0][0] = True
-        ice(1,0,0,0,t,puntos_clave)
+        ice(0,0,1,0)
 
         print(ans)
         ans = 0
