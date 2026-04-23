@@ -9,34 +9,21 @@ num = [0,1,2,3,4,5,6,7,8,9]
 ans = -1
 flag = False
 
-def super(m,i,sol):
-    global ans
-    global flag
+def super(m, i, sol, rem):
+    global flag, ans
+
+    if flag:
+        return
 
     if i > m:
+        ans = sol
         flag = True
-        ans = int(sol)
+        return
 
-    else:
-        
-        sol= 10*sol
-        j = 0
-        while j < len(num) and not flag:
-            numero = num[j]
-            sol += numero
-            if sol % i == 0:
-                super(m,i+1,sol)
-            sol-= numero
-            j += 1
-        """
-        for numero in num:
-            sol += numero
-            if sol % i == 0:
-                
-                super(m,i+1,sol)
-            sol-= numero
-        """        
-        sol = sol//10
+    for d in range(10):
+        nuevo_rem = (rem * 10 + d) % i
+        if nuevo_rem == 0:
+            super(m, i+1, sol*10 + d, nuevo_rem)
 
 
 def main():
@@ -55,7 +42,7 @@ def main():
 
             if count % n == 0:
                 inc = True
-                super(m,n+1,count)
+                super(m, n+1, count, count % n)
             if inc:
                 count += n
             else:
